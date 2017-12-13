@@ -63,30 +63,25 @@ class SoapRequest {
   eachRecursive(obj, parentElement)
   {
     let elementName = Object.keys(obj)[0];
-    let currentElement = parentElement; //this.appendChild(parentElement, elementName);
+    let currentElement = parentElement; 
 
     for (var k in obj)
     {
       if (!obj.hasOwnProperty(k))
         continue;       // skip this property
 
-      // console.log ('key:'+k);
-
       if (typeof obj[k] == "object" && obj[k] !== null) {
         if (Object.keys(obj[k]).find(x => x == 'attributes')) {
-					// console.log ('attributes:');
-					// console.log (obj[k].attributes);
-					for (var attr in obj[k].attributes) {
-						// console.log("add property "+k+':'+obj[k]);
-						currentElement.setAttribute(attr, obj[k].attributes[attr]);
-					}
-					delete obj[k].attributes;
-				}
-				this.eachRecursive(obj[k], this.appendChild(currentElement, k));
+          for (var attr in obj[k].attributes) {
+            currentElement.setAttribute(attr, obj[k].attributes[attr]);
+          }
+          delete obj[k].attributes;
+        }
+        this.eachRecursive(obj[k], this.appendChild(currentElement, k));
       }
       else {
-				let text = obj[k];
-				this.appendChild(currentElement, k, text);
+        let text = obj[k];
+        this.appendChild(currentElement, k, text);
       }
     }
   }
