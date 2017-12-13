@@ -1,0 +1,23 @@
+{
+  "name": "react-native-soap-request",
+  "version": "0.0.1",
+  "description": "Simple module for making SOAP requests with WSSecurity",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamski/react-native-soap-request.git"
+  },
+  "keywords": [
+    "soap",
+    "react-native"
+  ],
+  "author": "Adam Wilson <adam@codegarden.co.uk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adamski/react-native-soap-request/issues"
+  },
+  "homepage": "https://github.com/adamski/react-native-soap-request#readme"
+}
