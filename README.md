@@ -7,7 +7,7 @@ Simple module for making SOAP requests with WSSecurity
 npm install react-native-soap-request --save
 ```
 
-### Usage
+### Example Usage
 
 ```js
 const soapRequest = new SoapRequest({
