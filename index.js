@@ -16,7 +16,7 @@ class SoapRequest {
     if (props.targetNamespace) {
       this.targetNamespace = props.targetNamespace
     }
-      
+
     if (props.commonTypes) {
       this.commonTypes = props.commonTypes;
     }
@@ -31,14 +31,14 @@ class SoapRequest {
   }
 
   createRequest(request) {
-    this.xmlDoc = new DOMParser().parseFromString('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></soap:Envelope>'); 
+    this.xmlDoc = new DOMParser().parseFromString('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></soap:Envelope>');
     this.rootElement = this.xmlDoc.documentElement;
 
     if (this.targetNamespace) {
       this.rootElement.setAttribute('xmlns:ch0', this.targetNamespace);
       this.rootElement.setAttribute('xmlns:tns', this.targetNamespace);
     }
-      
+
     if (this.commonTypes) {
       this.rootElement.setAttribute('xmlns:ch1', this.commonTypes);
       this.rootElement.setAttribute('xmlns:cmn', this.commonTypes);
@@ -49,11 +49,11 @@ class SoapRequest {
     // Build request body
     const bodyElement = this.appendChild(this.rootElement, 'soap:Body');
 
-    this.eachRecursive(request, bodyElement); 
+    this.eachRecursive(request, bodyElement);
 
 
     //-------------------
- 
+
     const xmlSerializer = new XMLSerializer();
     const xmlOutput = xmlSerializer.serializeToString(this.xmlDoc);
     this.xmlRequest = xmlHeader + xmlOutput;
@@ -63,7 +63,7 @@ class SoapRequest {
   eachRecursive(obj, parentElement)
   {
     let elementName = Object.keys(obj)[0];
-    let currentElement = parentElement; 
+    let currentElement = parentElement;
 
     for (var k in obj)
     {
@@ -142,7 +142,43 @@ class SoapRequest {
 
       this.xmlResponse = await response.text();
       console.log('xmlResponse', this.xmlResponse);
-      
+
+      // Beware this relies on sync callback behaviour which apparently could change in future versions of react-native-xml2js
+      parseString(this.xmlResponse, (err, result) => {
+        if (err) {
+          throw (err);
+        }
+        this.responseDoc = result;
+      });
+
+      return this.responseDoc;
+
+    } catch(error) {
+      console.warn(error);
+    }
+  }
+
+  async sendRequestAuth(username, password) {
+    const auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
+    if (!this.xmlRequest)
+      throw new Error('Request empty, please call createRequest before sendRequest');
+    if (!this.requestURL)
+      throw new Error('requestURL empty!');
+
+    try {
+      let response = await fetch(this.requestURL, {
+          method: 'POST',
+          headers: {
+            'Accept': 'text/xml',
+            'Content-Type': 'text/xml',
+            'Authorization': auth
+          },
+          body: this.xmlRequest
+          });
+
+      this.xmlResponse = await response.text();
+      console.log('xmlResponse', this.xmlResponse);
+
       // Beware this relies on sync callback behaviour which apparently could change in future versions of react-native-xml2js
       parseString(this.xmlResponse, (err, result) => {
         if (err) {
