@@ -10,6 +10,10 @@ npm install react-native-soap-request --save
 ### Example Usage
 
 ```js
+import SoapRequest from 'react-native-soap-request';
+```
+
+```js
 const soapRequest = new SoapRequest({
   security: {
     username: 'username',
